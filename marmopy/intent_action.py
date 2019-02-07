@@ -1,6 +1,8 @@
-from web3.contract import Contract
+from web3.contract import encode_abi
 from functools import partial
 from eth_utils import function_abi_to_4byte_selector, encode_hex
+import web3
+
 
 class Action(object):
     def __init__(self, function):
@@ -39,7 +41,7 @@ class Action(object):
         return {
             "to": instance.address,
             "value": 0,
-            "data": Contract._encode_abi(self.abi, params, selector).decode()
+            "data": encode_abi(web3, self.abi, params, selector)
         }
 
     def order_dict_args(self, args):

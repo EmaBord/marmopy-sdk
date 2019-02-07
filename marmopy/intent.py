@@ -17,8 +17,9 @@ from .constants import wallet_abi
 from web3 import Web3
 from web3.exceptions import BadFunctionCallOutput
 from .utils import decode_receipt_event, from_bytes, to_bytes
-from web3.contract import Contract as Web3Contract
+from web3.contract import encode_abi
 import json
+
 
 class Intent(object):
     DEFAULT_SALT = '0x0000000000000000000000000000000000000000000000000000000000000000'
@@ -89,7 +90,7 @@ class Intent(object):
             remove_0x_prefix(self.data),
             remove_0x_prefix(from_bytes(to_bytes("00") * data_len_padded_dif))
         ]
-        
+
         return "".join(implement_call)
 
     def add_dependency(self, dependency):
@@ -98,7 +99,7 @@ class Intent(object):
                 'address': dependency.wallet.address,
                 'id': dependency.id
             }
-        
+
         self.intent_dependencies.append(dependency)
 
     def prepare_dependency(self, config):
@@ -121,7 +122,7 @@ class Intent(object):
 
             to = to_bytes(self.intent_dependencies[0]['address'])
             data_signature = function_abi_to_4byte_selector(relayed_at_abi)
-            data_params = to_bytes(Web3Contract._encode_abi(
+            data_params = to_bytes(encode_abi(
                 relayed_at_abi,
                 [to_bytes(self.intent_dependencies[0]['id'])]
             ))
@@ -145,14 +146,17 @@ class Intent(object):
 
             to = to_bytes(config.dependency_utils)
             data_signature = function_abi_to_4byte_selector(multiple_deps_abi)
-            data_params = to_bytes(Web3Contract._encode_abi(multiple_deps_abi,
-                [
-                    list(map(lambda x: x["address"], self.intent_dependencies)),
-                    list(map(lambda x: to_bytes(x["id"]), self.intent_dependencies))
-                ]
-            ))
+            data_params = to_bytes(
+                encode_abi(
+                    multiple_deps_abi,
+                    [
+                        list(map(lambda x: x["address"], self.intent_dependencies)),
+                        list(map(lambda x: to_bytes(x["id"]), self.intent_dependencies))
+                    ]
+                ))
 
             return from_bytes(to + data_signature + data_params)
+
 
 class SignedIntent(object):
     def __init__(self, intent, wallet, signature):
@@ -160,7 +164,7 @@ class SignedIntent(object):
         self.wallet = wallet
         self.signature = signature
         self.id = intent.id(wallet)
-    
+
     def to_json(self):
         return {
             "id": self.id,
@@ -210,7 +214,7 @@ class SignedIntent(object):
 
             # TODO: Search by topic
             event_data = decode_receipt_event(relay_event[1]["data"])
-            
+
             if 'tx_hash' in relay_event[1]:
                 tx_hash = relay_event[1]["tx_hash"]
             else:
