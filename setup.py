@@ -20,7 +20,7 @@ setup(
     install_requires=[
         "web3",
         "rlp",
-        "pycryptodome=",
+        "pycryptodome",
         "coincurve",
         "requests"
     ],
