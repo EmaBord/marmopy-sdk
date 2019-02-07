@@ -111,7 +111,6 @@ intent = Intent(intent_action = intentAction)
 ### Build a intent generic	
 ```python	
 from marmopy import Intent, Contract	
-from examples.generic_contract import Contract	
 
 // can load the full abi, in var abi, of any contract for the demonstration mode, 	
 // only the necessary part for the example is loaded	
