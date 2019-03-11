@@ -1,6 +1,7 @@
 from web3.contract import encode_abi
 from functools import partial
 from eth_utils import function_abi_to_4byte_selector, encode_hex
+import web3
 
 
 class Action(object):
@@ -38,7 +39,7 @@ class Action(object):
         return {
             "to": instance.address,
             "value": 0,
-            "data": encode_abi(self.abi, params, selector).decode(),
+            "data": encode_abi(web3, self.abi, params, selector),
             "parent": {
                 "inputs": self.abi["inputs"],
                 "outputs": self.abi["outputs"]
