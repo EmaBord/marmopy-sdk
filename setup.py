@@ -3,9 +3,8 @@ from setuptools import find_packages, setup
 
 setup(
     name='marmopy',
-    
-    version="0.3.1",
-    
+
+    version="0.4.0",
 
     description='Marmo wallet Python SDK',
 
@@ -22,6 +21,7 @@ setup(
         "rlp",
         "pycryptodome",
         "coincurve",
+        "eth-abi",
         "requests"
     ],
 
@@ -34,7 +34,6 @@ setup(
     },
 
     classifiers=[
-        'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.7',
     ],
 )
